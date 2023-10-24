@@ -1,0 +1,2 @@
+ALTER TABLE Users ADD COLUMN type VARCHAR(10);
+ALTER TABLE Users ADD CONSTRAINT unique_email UNIQUE(email);

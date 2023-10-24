@@ -1,6 +1,7 @@
 package bogatu.api.apiquest.services;
 
 import bogatu.api.apiquest.dtos.UserRegistrationRequest;
+import bogatu.api.apiquest.entities.User;
 import bogatu.api.apiquest.repositories.UserDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,17 @@ public class UserService {
 
     @Transactional
     public void registerUser(UserRegistrationRequest userRegistrationRequest){
-//        if(userDAO.verifyUserEmailExists(userRegistrationRequest.email()))
+        if(userDAO.findUserByEmail(userRegistrationRequest.email()).isPresent()){
+            throw new IllegalStateException();
+            // TODO - replace with existing exception
+        }
+
+        userDAO.registerUser(
+                User.builder()
+                        .username(userRegistrationRequest.username())
+                        .password(userRegistrationRequest.password())
+                        .userType(User.UserType.REGISTERED)
+                        .build()
+        );
     }
 }

@@ -2,21 +2,27 @@ package bogatu.api.apiquest.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 @Entity
-@Table(name = "Users")
+@Table(
+        name = "Users",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "unique_email",
+                        columnNames = "email"
+                )
+        }
+)
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class User {
 
-    @SequenceGenerator(name = "user_id_generator", sequenceName = "user_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "user_id_generator", sequenceName = "users_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_generator")
     @Column(columnDefinition = "BIGSERIAL")
     @Id

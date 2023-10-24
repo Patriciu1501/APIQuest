@@ -6,13 +6,11 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserDAO{
+public sealed interface UserDAO permits UserDataJPA{
 
     List<User> getAllUsers();
-    Optional<User> findUserById(Integer id);
+    Optional<User> findUserById(int id);
     Optional<User> findUserByEmail(String email);
-    boolean verifyUserEmailExists(String email);
-    boolean verifyUserIdExists(int id);
     void registerUser(User user);
     void deleteUser(int id);
     void updateUser(User customer);
