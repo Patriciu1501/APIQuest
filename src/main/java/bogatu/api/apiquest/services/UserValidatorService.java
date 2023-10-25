@@ -1,24 +1,23 @@
 package bogatu.api.apiquest.services;
 
+import bogatu.api.apiquest.exceptions.RequestValidationException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UserValidatorService {
 
-    public void formatError(Optional<Errors> errors){
-        errors.ifPresent(e -> {
-            String exceptionMessage = e.getAllErrors()
-                    .stream()
-                    .map(objErr -> objErr.getObjectName() + " " + objErr.getDefaultMessage())
-                    .collect(Collectors.joining("\n"));
+    public void formatErrorsIfAny(Errors errors){
+        Map<String, String> collectedErrors = errors.getFieldErrors()
+                .stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
 
-            throw new IllegalStateException(exceptionMessage);
-
-            // TODO - Create custom exception for this scenario
-        });
+        if(!collectedErrors.isEmpty()) throw new RequestValidationException(collectedErrors);
     }
 }
