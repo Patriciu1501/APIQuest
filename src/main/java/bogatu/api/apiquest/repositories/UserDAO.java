@@ -11,7 +11,7 @@ public sealed interface UserDAO permits UserDataJPA{
     List<User> getAllUsers();
     Optional<User> findUserById(int id);
     Optional<User> findUserByEmail(String email);
-    void registerUser(User user);
+    User registerUser(User user);
     void deleteUser(int id);
     void updateUser(User customer);
 }

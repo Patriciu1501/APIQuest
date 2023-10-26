@@ -19,7 +19,7 @@ public class GlobalExceptionsHandler {
                 ErrorMessage.builder()
                         .httpStatus(HttpStatus.CONFLICT)
                         .message(ErrorMessage.INVALID_DATA_MESSAGE)
-                        .details(Set.of(Map.entry("Email", exception.getMessage())))
+                        .details(Set.of(Map.entry("email", exception.getMessage())))
                         .build(),
                 HttpStatus.CONFLICT);
     }

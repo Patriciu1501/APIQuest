@@ -1,6 +1,7 @@
 package bogatu.api.apiquest.controllers;
 
 import bogatu.api.apiquest.dtos.UserRegistrationRequest;
+import bogatu.api.apiquest.entities.User;
 import bogatu.api.apiquest.services.UserService;
 import bogatu.api.apiquest.services.UserValidatorService;
 import jakarta.validation.Valid;
@@ -24,11 +25,9 @@ public class UserController {
     private final UserValidatorService validatorService;
 
     @PostMapping("/users")
-    ResponseEntity<String> registerUser(@RequestBody @Validated UserRegistrationRequest request, Errors errors){
+    ResponseEntity<User> registerUser(@RequestBody @Validated UserRegistrationRequest request, Errors errors){
         validatorService.formatErrorsIfAny(errors);
-        userService.registerUser(request);
-        return new ResponseEntity<>("Successfully registered", HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.registerUser(request), HttpStatus.CREATED);
     }
-
 
 }

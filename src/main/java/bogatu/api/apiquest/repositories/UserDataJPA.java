@@ -29,10 +29,9 @@ public non-sealed class UserDataJPA implements UserDAO{
         return repo.findUserByEmail(email);
     }
 
-
     @Override
-    public void registerUser(User user) {
-        repo.save(user);
+    public User registerUser(User user) {
+        return repo.save(user);
     }
 
     @Override
