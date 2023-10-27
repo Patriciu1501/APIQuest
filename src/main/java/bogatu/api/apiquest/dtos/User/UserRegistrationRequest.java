@@ -1,8 +1,12 @@
-package bogatu.api.apiquest.dtos;
+package bogatu.api.apiquest.dtos.User;
 
 import jakarta.validation.constraints.*;
-import org.hibernate.validator.constraints.Length;
+import lombok.Builder;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+@Builder
 public record UserRegistrationRequest (@NotNull @Size(min = 5)
                                        String username,
                                        @NotNull @Pattern(
@@ -11,5 +15,11 @@ public record UserRegistrationRequest (@NotNull @Size(min = 5)
                                                        "and must contains both letters and numbers"
                                        )
                                        String password,
-                                       @NotNull @NotBlank @Email String email){
+                                       @NotNull @NotBlank @Email String email,
+                                       LocalDateTime createdAt){
+
+
+    public UserRegistrationRequest{
+        createdAt = LocalDateTime.now();
+    }
 }

@@ -25,4 +25,13 @@ public class GenericEntity {
     @Column(name = "updated_at", insertable = false)
     @JsonIgnore
     private LocalDateTime updatedAt;
+
+
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof GenericEntity g)) return false;
+
+        return this.createdAt.equals(g.createdAt)
+                && this.updatedAt.equals(g.updatedAt);
+    }
 }

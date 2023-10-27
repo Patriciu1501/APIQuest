@@ -1,0 +1,61 @@
+package bogatu.api.apiquest.tools;
+
+import bogatu.api.apiquest.dtos.User.UserRegistrationRequest;
+import bogatu.api.apiquest.dtos.User.UserRegistrationResponse;
+import bogatu.api.apiquest.entities.User;
+import com.github.javafaker.Faker;
+
+import java.time.LocalDateTime;
+import java.util.Random;
+import java.util.stream.Stream;
+
+public final class InstanceProvider {
+
+    private static final Faker faker = new Faker();
+
+
+    public final static class UserProvider{
+
+        public static Stream<User> users(){
+            return Stream.generate(UserProvider::randomUser);
+        }
+
+        public static Stream<UserRegistrationRequest> requests(){
+            return Stream.generate(UserProvider::randomRequest);
+        }
+
+
+        public static User randomUser(){
+            return User.builder()
+                    .userType(User.UserType.REGISTERED)
+                    .username(faker.name().username())
+                    .password(faker.internet().password(true))
+                    .email(faker.internet().emailAddress())
+                    .createdAt(LocalDateTime.now())
+                    .build();
+        }
+
+
+        public static UserRegistrationRequest randomRequest(){
+            return UserRegistrationRequest.builder()
+                    .username(faker.name().username())
+                    .password(faker.internet().password())
+                    .email(faker.internet().emailAddress())
+                    .build();
+        }
+
+
+        public static UserRegistrationResponse randomResponse(){
+            return UserRegistrationResponse
+                    .builder()
+                    .id(new Random().nextInt())
+                    .username(faker.name().username())
+                    .email(faker.internet().emailAddress())
+                    .createdAt(LocalDateTime.now())
+                    .build();
+        }
+    }
+
+
+    private InstanceProvider(){}
+}

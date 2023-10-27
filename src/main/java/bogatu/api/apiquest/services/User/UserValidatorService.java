@@ -1,4 +1,4 @@
-package bogatu.api.apiquest.services;
+package bogatu.api.apiquest.services.User;
 
 import bogatu.api.apiquest.exceptions.RequestValidationException;
 import org.springframework.stereotype.Service;

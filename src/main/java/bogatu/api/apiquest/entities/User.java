@@ -25,12 +25,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-@JsonPropertyOrder({
-        "id",
-        "username",
-        "email",
-        "userType"
-})
 public class User extends GenericEntity{
 
     @SequenceGenerator(name = "user_id_generator", sequenceName = "users_id_seq", allocationSize = 1)
@@ -43,7 +37,6 @@ public class User extends GenericEntity{
 
     private String email;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Enumerated(value = EnumType.STRING)
@@ -61,8 +54,21 @@ public class User extends GenericEntity{
         this.userType = userType;
     }
 
-
     public enum UserType{
         VISITOR, REGISTERED, VERIFIED, ADMIN
+    }
+
+
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof User u)) return false;
+
+        return this.id == u.id
+                && this.username.equals(u.username)
+                && this.email.equals(u.email)
+                && this.userType.equals(u.userType)
+                && this.password.equals(u.password)
+                && super.equals(u);
+
     }
 }

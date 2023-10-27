@@ -13,6 +13,4 @@ public record ErrorMessage(HttpStatus httpStatus, String message, Collection<Map
 
     public static final String INVALID_DATA_MESSAGE = "Invalid data provided" +
             ", please check and correct the following issues";
-
-
 }

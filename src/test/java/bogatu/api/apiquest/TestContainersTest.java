@@ -48,20 +48,4 @@ public abstract class TestContainersTest {
     static void afterAll(){
         postgreSQLContainer.close();
     }
-
-
-
-    protected User getUser() {
-        Faker faker = new Faker();
-        String name = faker.name().username();
-
-        return User.builder()
-                .userType(User.UserType.REGISTERED)
-                .password(faker.internet().password(true))
-                .email(faker.internet().emailAddress())
-                .createdAt(LocalDateTime.now())
-                .build();
-    }
-
-
 }
