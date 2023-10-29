@@ -69,6 +69,5 @@ public class User extends GenericEntity{
                 && this.userType.equals(u.userType)
                 && this.password.equals(u.password)
                 && super.equals(u);
-
     }
 }

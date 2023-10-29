@@ -1,5 +1,6 @@
 package bogatu.api.apiquest.tools;
 
+import bogatu.api.apiquest.dtos.User.UserInfo;
 import bogatu.api.apiquest.dtos.User.UserRegistrationRequest;
 import bogatu.api.apiquest.dtos.User.UserRegistrationResponse;
 import bogatu.api.apiquest.entities.User;
@@ -25,11 +26,25 @@ public final class InstanceProvider {
         }
 
 
+        public static Stream<UserInfo> userInfos(){
+            return Stream.generate(UserProvider::randomUserInfo);
+        }
+
         public static User randomUser(){
             return User.builder()
                     .userType(User.UserType.REGISTERED)
                     .username(faker.name().username())
                     .password(faker.internet().password(true))
+                    .email(faker.internet().emailAddress())
+                    .createdAt(LocalDateTime.now())
+                    .build();
+        }
+
+
+        public static UserInfo randomUserInfo(){
+            return UserInfo
+                    .builder()
+                    .username(faker.name().username())
                     .email(faker.internet().emailAddress())
                     .createdAt(LocalDateTime.now())
                     .build();

@@ -1,7 +1,10 @@
 package bogatu.api.apiquest.repositories;
 
+import bogatu.api.apiquest.dtos.User.UserInfo;
+import bogatu.api.apiquest.dtos.User.UserUpdateDTO;
 import bogatu.api.apiquest.entities.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,8 +18,8 @@ public non-sealed class UserDataJPA implements UserDAO{
 
 
     @Override
-    public List<User> getAllUsers() {
-        return repo.findAll();
+    public List<UserInfo> getAllUsers(int pageNumber, int pageSize) {
+        return repo.findAllUsers(Pageable.ofSize(pageSize).withPage(pageNumber)).toList();
     }
 
     @Override
@@ -37,10 +40,5 @@ public non-sealed class UserDataJPA implements UserDAO{
     @Override
     public void deleteUser(int id) {
         repo.deleteById(id);
-    }
-
-    @Override
-    public void updateUser(User customer) {
-        repo.save(customer);
     }
 }

@@ -18,7 +18,6 @@ public class GlobalExceptionsHandler {
         return new ResponseEntity<>(
                 ErrorMessage.builder()
                         .httpStatus(HttpStatus.CONFLICT)
-                        .message(ErrorMessage.INVALID_DATA_MESSAGE)
                         .details(Set.of(Map.entry("email", exception.getMessage())))
                         .build(),
                 HttpStatus.CONFLICT);
@@ -27,12 +26,25 @@ public class GlobalExceptionsHandler {
     @ExceptionHandler(RequestValidationException.class)
     public ResponseEntity<ErrorMessage> handleReqValidationException(RequestValidationException exception){
         return new ResponseEntity<>(
-                ErrorMessage.builder()
+                ErrorMessage
+                        .builder()
                         .httpStatus(HttpStatus.BAD_REQUEST)
-                        .message(ErrorMessage.INVALID_DATA_MESSAGE)
                         .details(exception.getFieldDetails().entrySet())
                         .build(),
-                HttpStatus.BAD_REQUEST);
+                HttpStatus.BAD_REQUEST
+        );
+    }
+
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleUserNotFoundException(UserNotFoundException exception){
+        return new ResponseEntity<>(
+                ErrorMessage.builder()
+                        .httpStatus(HttpStatus.NOT_FOUND)
+                        .details(Set.of(Map.entry("id",  exception.getMessage())))
+                        .build(),
+                HttpStatus.NOT_FOUND
+        );
     }
 
 }

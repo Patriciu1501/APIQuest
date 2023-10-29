@@ -1,7 +1,6 @@
 package bogatu.api.apiquest.mappers;
 
-import bogatu.api.apiquest.dtos.User.UserRegistrationRequest;
-import bogatu.api.apiquest.dtos.User.UserRegistrationResponse;
+import bogatu.api.apiquest.dtos.User.*;
 import bogatu.api.apiquest.entities.User;
 import org.mapstruct.Mapper;
 
@@ -9,4 +8,7 @@ import org.mapstruct.Mapper;
 public interface UserMapper {
     UserRegistrationResponse entityToDtoResponse(User user);
     User dtoRequestToEntity(UserRegistrationRequest userRegistrationRequest);
+    UserUpdateDTO entityToUpdateDto(User user);
+    User updateDtoToEntity(UserUpdateDTO userUpdateDTO);
+    UserInfo entityToUserInfo(User user);
 }

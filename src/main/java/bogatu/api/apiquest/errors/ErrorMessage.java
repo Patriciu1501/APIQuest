@@ -9,8 +9,11 @@ import java.util.Collection;
 import java.util.Map;
 
 @Builder
-public record ErrorMessage(HttpStatus httpStatus, String message, Collection<Map.Entry<String, String>> details) {
+@Getter
+public class ErrorMessage {
 
-    public static final String INVALID_DATA_MESSAGE = "Invalid data provided" +
-            ", please check and correct the following issues";
+    private final HttpStatus httpStatus;
+    @Builder.Default
+    private final String message = "Invalid data. Correct the following issues";
+    private final Collection<Map.Entry<String, String>> details;
 }

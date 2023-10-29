@@ -1,5 +1,6 @@
 package bogatu.api.apiquest;
 
+import bogatu.api.apiquest.dtos.User.UserUpdateDTO;
 import bogatu.api.apiquest.entities.User;
 import com.github.javafaker.Faker;
 import org.flywaydb.core.Flyway;
