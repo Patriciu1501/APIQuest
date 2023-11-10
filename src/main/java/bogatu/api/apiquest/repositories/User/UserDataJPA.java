@@ -1,7 +1,7 @@
-package bogatu.api.apiquest.repositories;
+package bogatu.api.apiquest.repositories.User;
 
 import bogatu.api.apiquest.dtos.User.UserInfo;
-import bogatu.api.apiquest.dtos.User.UserUpdateDTO;
+import bogatu.api.apiquest.dtos.User.UserInfoProjection;
 import bogatu.api.apiquest.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +18,7 @@ public non-sealed class UserDataJPA implements UserDAO{
 
 
     @Override
-    public List<UserInfo> getAllUsers(int pageNumber, int pageSize) {
+    public List<User> getAllUsers(int pageNumber, int pageSize) {
         return repo.findAllUsers(Pageable.ofSize(pageSize).withPage(pageNumber)).toList();
     }
 

@@ -8,8 +8,10 @@ import bogatu.api.apiquest.services.User.UserValidatorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +30,6 @@ public class UserController {
     private final UserValidatorService validatorService;
 
 
-    @PostMapping
-    ResponseEntity<UserRegistrationResponse> registerUser(@RequestBody @Validated UserRegistrationRequest request, Errors errors){
-        validatorService.formatErrorsIfAny(errors);
-        return new ResponseEntity<>(userService.registerUser(request), HttpStatus.CREATED);
-    }
-
 
     @PutMapping("/{id}")
     ResponseEntity<UserUpdateDTO> updateUser(@RequestBody @Validated UserUpdateDTO request, Errors errors,
@@ -42,10 +38,12 @@ public class UserController {
         return new ResponseEntity<>(userService.updateUser(request, id), HttpStatus.OK);
     }
 
+
     @GetMapping
     ResponseEntity<List<UserInfo>> getAllUsers(@RequestParam(defaultValue = "-1") int pageNumber){
         return new ResponseEntity<>(userService.getAllUsers(pageNumber), HttpStatus.OK);
     }
+
 
     @GetMapping("/{id}")
     ResponseEntity<UserInfo> getUser(@PathVariable int id){

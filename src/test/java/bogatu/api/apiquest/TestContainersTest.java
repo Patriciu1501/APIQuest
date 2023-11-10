@@ -25,6 +25,8 @@ public abstract class TestContainersTest {
                     .withUsername("patriciu")
                     .withPassword("bogatu");
 
+
+
     @BeforeAll
     static void beforeAll() {
         Flyway flyway = Flyway.configure()

@@ -1,25 +1,23 @@
 package bogatu.api.apiquest.services.User;
 
-import bogatu.api.apiquest.controllers.UserController;
-import bogatu.api.apiquest.dtos.User.UserInfo;
-import bogatu.api.apiquest.dtos.User.UserRegistrationRequest;
-import bogatu.api.apiquest.dtos.User.UserRegistrationResponse;
-import bogatu.api.apiquest.dtos.User.UserUpdateDTO;
+import bogatu.api.apiquest.dtos.User.*;
 import bogatu.api.apiquest.entities.User;
 import bogatu.api.apiquest.exceptions.DuplicateException;
 import bogatu.api.apiquest.exceptions.RequestValidationException;
 import bogatu.api.apiquest.exceptions.UserNotFoundException;
+import bogatu.api.apiquest.mappers.APIMapper;
 import bogatu.api.apiquest.mappers.UserMapper;
-import bogatu.api.apiquest.repositories.UserDAO;
+import bogatu.api.apiquest.repositories.API.APIDao;
+import bogatu.api.apiquest.repositories.User.UserDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 @Service
@@ -28,7 +26,9 @@ import java.util.stream.Stream;
 public class UserServiceImpl implements UserService{
 
     private final UserDAO userDAO;
+    private final APIDao apiDao;
     private final UserMapper userMapper;
+    private final APIMapper apiMapper;
 
     @Transactional
     @Override
@@ -36,9 +36,18 @@ public class UserServiceImpl implements UserService{
         userDAO.findUserByEmail(userRegistrationRequest.email())
                 .ifPresent(c -> {throw new DuplicateException(userRegistrationRequest.email() + " already taken");});
 
+
+        User entityToSave = userMapper.dtoRequestToEntity(userRegistrationRequest);
+        entityToSave.setRoleId(User.UserType.ROLE_USER.getId());
+        var defaultAPIs = apiDao.getAllAPIs().stream().map(apiMapper::dtoToEntity).toList();
+        defaultAPIs.forEach(a -> a.getUsers().add(entityToSave));
+        entityToSave.setApiSet(Set.copyOf(defaultAPIs));
+
+        defaultAPIs.forEach(apiDao::registerAPI);
+
         return userMapper.entityToDtoResponse(
                 userDAO.registerUser(
-                        userMapper.dtoRequestToEntity(userRegistrationRequest)
+                        entityToSave
                 )
         );
     }
@@ -55,7 +64,14 @@ public class UserServiceImpl implements UserService{
             pageSize = 4; // hardcoded, better make a constant somewhere
         }
 
-        return userDAO.getAllUsers(pageNumber, pageSize);
+        return userDAO.getAllUsers(pageNumber, pageSize)
+                .stream()
+                .map(u -> {
+                    var userInfo = userMapper.entityToUserInfo(u);
+                    userInfo.setUserType(userInfo.getUserType().substring(5));
+                    return userInfo;
+                })
+                .toList();
     }
 
     @Override

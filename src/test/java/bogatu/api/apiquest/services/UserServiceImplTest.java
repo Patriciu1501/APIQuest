@@ -2,9 +2,12 @@ package bogatu.api.apiquest.services;
 
 import bogatu.api.apiquest.entities.User;
 import bogatu.api.apiquest.exceptions.DuplicateException;
+import bogatu.api.apiquest.mappers.APIMapper;
 import bogatu.api.apiquest.mappers.UserMapper;
-import bogatu.api.apiquest.repositories.UserDAO;
-import bogatu.api.apiquest.repositories.UserDataJPA;
+import bogatu.api.apiquest.repositories.API.APIDao;
+import bogatu.api.apiquest.repositories.API.APIDataJpa;
+import bogatu.api.apiquest.repositories.User.UserDAO;
+import bogatu.api.apiquest.repositories.User.UserDataJPA;
 import bogatu.api.apiquest.services.User.UserServiceImpl;
 import bogatu.api.apiquest.tools.InstanceProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,20 +21,25 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
     UserDAO userDAO;
+    APIDao apiDao;
     @Mock
     UserMapper userMapper;
+    @Mock
+    APIMapper apiMapper;
     UserServiceImpl underTest;
 
     @BeforeEach
     void beforeEach(){
         userDAO = Mockito.mock(UserDataJPA.class);
-        underTest = new UserServiceImpl(userDAO, userMapper);
+        apiDao = Mockito.mock(APIDataJpa.class);
+        underTest = new UserServiceImpl(userDAO, apiDao, userMapper, apiMapper);
     }
 
 
@@ -59,12 +67,13 @@ class UserServiceImplTest {
     void test2(){
         var givenRequest = InstanceProvider.UserProvider.randomRequest();
 
-        when(userDAO.findUserByEmail(givenRequest.email())).thenReturn(Optional.empty());
-        when(userMapper.dtoRequestToEntity(any())).thenReturn(any());
-        when(userDAO.registerUser(InstanceProvider.UserProvider.randomUser())).thenReturn(InstanceProvider.UserProvider.randomUser());
+        given(userDAO.findUserByEmail(givenRequest.email())).willReturn(Optional.empty());
+        given(userMapper.dtoRequestToEntity(any())).willReturn(any());
+        given(userDAO.registerUser(InstanceProvider.UserProvider.randomUser()))
+                .willReturn(InstanceProvider.UserProvider.randomUser());
 
         var responseToReturn = InstanceProvider.UserProvider.randomResponse();
-        when(userMapper.entityToDtoResponse(any())).thenReturn(responseToReturn);
+        given(userMapper.entityToDtoResponse(any())).willReturn(responseToReturn);
 
         assertThatNoException().isThrownBy(() -> {
             var receivedResponse = underTest.registerUser(givenRequest);

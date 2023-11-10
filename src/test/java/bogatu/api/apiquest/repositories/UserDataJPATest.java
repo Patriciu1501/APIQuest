@@ -2,6 +2,8 @@ package bogatu.api.apiquest.repositories;
 
 import bogatu.api.apiquest.TestContainersTest;
 import bogatu.api.apiquest.entities.User;
+import bogatu.api.apiquest.repositories.User.UserDataJPA;
+import bogatu.api.apiquest.repositories.User.UserRepoDataJPA;
 import bogatu.api.apiquest.tools.InstanceProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;

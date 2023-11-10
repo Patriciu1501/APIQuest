@@ -16,3 +16,7 @@ spring:
 server:
   port: 8081
 
+
+apiquest:
+  jwt:
+    secretSigningKey: 582A2489FCFF3AA72A86ED82D43DE469

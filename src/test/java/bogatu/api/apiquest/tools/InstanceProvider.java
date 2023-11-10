@@ -7,6 +7,7 @@ import bogatu.api.apiquest.entities.User;
 import com.github.javafaker.Faker;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -32,7 +33,6 @@ public final class InstanceProvider {
 
         public static User randomUser(){
             return User.builder()
-                    .userType(User.UserType.REGISTERED)
                     .username(faker.name().username())
                     .password(faker.internet().password(true))
                     .email(faker.internet().emailAddress())

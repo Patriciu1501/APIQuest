@@ -1,9 +1,6 @@
 package bogatu.api.apiquest.services.User;
 
-import bogatu.api.apiquest.dtos.User.UserInfo;
-import bogatu.api.apiquest.dtos.User.UserRegistrationRequest;
-import bogatu.api.apiquest.dtos.User.UserRegistrationResponse;
-import bogatu.api.apiquest.dtos.User.UserUpdateDTO;
+import bogatu.api.apiquest.dtos.User.*;
 import bogatu.api.apiquest.entities.User;
 
 import java.util.List;
