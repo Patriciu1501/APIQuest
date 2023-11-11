@@ -30,7 +30,6 @@ public class UserController {
     private final UserValidatorService validatorService;
 
 
-
     @PutMapping("/{id}")
     ResponseEntity<UserUpdateDTO> updateUser(@RequestBody @Validated UserUpdateDTO request, Errors errors,
                                                        @PathVariable int id){
@@ -48,5 +47,13 @@ public class UserController {
     @GetMapping("/{id}")
     ResponseEntity<UserInfo> getUser(@PathVariable int id){
         return new ResponseEntity<>(userService.findUserById(id), HttpStatus.FOUND);
+    }
+
+
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    ResponseEntity<?> deleteUser(@PathVariable int id){
+        return null;
     }
 }

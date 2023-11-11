@@ -38,7 +38,7 @@ class UserDataJPATest extends TestContainersTest {
 
         User toReturn = User.builder()
                 .id(1)
-                .username(givenUser.getUsername())
+                .apiQuestUsername(givenUser.getUsername())
                 .password(givenUser.getPassword())
                 .email(givenUser.getEmail())
                 .userType(givenUser.getUserType())

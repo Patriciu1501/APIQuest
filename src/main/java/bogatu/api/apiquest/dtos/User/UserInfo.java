@@ -20,15 +20,16 @@ import java.util.Set;
 @Getter
 @Setter
 @AllArgsConstructor
-@JsonPropertyOrder(value = {"id", "username", "email", "createdAt", "updatedAt", "apiSet"})
+@JsonPropertyOrder(value = {"id", "username", "email", "createdAt", "updatedAt", "userType"})
 public class UserInfo {
 
     private int id;
-    private String username;
+    @JsonProperty("username")
+    private String apiQuestUsername;
     private String email;
+    private int score;
     @JsonProperty("type")
     private String userType;
-
     @JsonFormat(pattern = "dd MMM, YYYY 'at' HH:mm")
     @JsonProperty("registrationTime")
     private LocalDateTime createdAt;

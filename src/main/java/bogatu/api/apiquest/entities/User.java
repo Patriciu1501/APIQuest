@@ -31,10 +31,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-@SecondaryTable(
-        name = "Roles"
-)
-//@ToString
+@SecondaryTable(name = "Roles")
 public class User extends GenericEntity implements UserDetails {
 
     @SequenceGenerator(name = "user_id_generator", sequenceName = "users_id_seq", allocationSize = 1)
@@ -42,19 +39,15 @@ public class User extends GenericEntity implements UserDetails {
     @Column(columnDefinition = "BIGSERIAL")
     @Id
     private int id;
-
-    private String username;
-
+    //renamed to avoid ambiguity the getUsername() by lombok and getUsername() for UseDetails
+    @Column(name = "username")
+    private String apiQuestUsername;
     private String email;
-
     private String password;
-
-
+    private int score;
     @Column(name = "name", table = "Roles")
     @Enumerated(EnumType.STRING)
     private UserType userType;
-
-
     @Column(name = "role_id")
     private int roleId;
 
@@ -69,11 +62,11 @@ public class User extends GenericEntity implements UserDetails {
 
 
     @Builder
-    public User(int id, String username, String password, String email, UserType userType,
+    public User(int id, String apiQuestUsername, String password, String email, UserType userType,
                 LocalDateTime createdAt, LocalDateTime updatedAt){
         super(createdAt, updatedAt);
         this.id = id;
-        this.username = username;
+        this.apiQuestUsername = apiQuestUsername;
         this.password = password;
         this.email = email;
         this.userType = userType;
@@ -85,11 +78,18 @@ public class User extends GenericEntity implements UserDetails {
         if(!(o instanceof User u)) return false;
 
         return this.id == u.id
-                && this.username.equals(u.username)
+                && this.apiQuestUsername.equals(u.apiQuestUsername)
                 && this.email.equals(u.email)
                 && this.userType.equals(u.userType)
                 && this.password.equals(u.password)
                 && super.equals(u);
+    }
+
+
+    // by default lombok overrides it, hence it returns the actual entity username instead of email
+    @Override
+    public String getUsername(){
+        return this.email;
     }
 
     @Override

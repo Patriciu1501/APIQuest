@@ -55,7 +55,10 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
                 Authentication auth = new UsernamePasswordAuthenticationToken(username, null,
                         AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
 
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                var context = SecurityContextHolder.createEmptyContext();
+                context.setAuthentication(auth);
+                SecurityContextHolder.setContext(context);
+
             }catch(Exception e){
                 throw new BadCredentialsException("Invalid token received" + e.getClass());
             }

@@ -33,10 +33,12 @@ public final class InstanceProvider {
 
         public static User randomUser(){
             return User.builder()
-                    .username(faker.name().username())
+                    .apiQuestUsername(faker.name().username())
                     .password(faker.internet().password(true))
                     .email(faker.internet().emailAddress())
+                    .userType(User.UserType.ROLE_USER)
                     .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .build();
         }
 
@@ -44,7 +46,7 @@ public final class InstanceProvider {
         public static UserInfo randomUserInfo(){
             return UserInfo
                     .builder()
-                    .username(faker.name().username())
+                    .apiQuestUsername(faker.name().username())
                     .email(faker.internet().emailAddress())
                     .createdAt(LocalDateTime.now())
                     .build();

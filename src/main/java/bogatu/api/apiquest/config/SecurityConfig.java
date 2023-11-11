@@ -43,6 +43,7 @@ public class SecurityConfig{
 
         http.authorizeHttpRequests(
                 reqs -> reqs.requestMatchers("/api/apis/**").authenticated()
+                        .requestMatchers("/api/profile/**").hasRole("USER")
                         .anyRequest().permitAll()
         );
 

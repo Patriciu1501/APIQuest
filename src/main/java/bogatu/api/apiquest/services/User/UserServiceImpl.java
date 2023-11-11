@@ -1,5 +1,6 @@
 package bogatu.api.apiquest.services.User;
 
+import bogatu.api.apiquest.controllers.DefaultAPIs;
 import bogatu.api.apiquest.dtos.User.*;
 import bogatu.api.apiquest.entities.User;
 import bogatu.api.apiquest.exceptions.DuplicateException;
@@ -10,6 +11,8 @@ import bogatu.api.apiquest.mappers.UserMapper;
 import bogatu.api.apiquest.repositories.API.APIDao;
 import bogatu.api.apiquest.repositories.User.UserDAO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,8 @@ public class UserServiceImpl implements UserService{
     private final APIDao apiDao;
     private final UserMapper userMapper;
     private final APIMapper apiMapper;
+    private final PasswordEncoder passwordEncoder;
+
 
     @Transactional
     @Override
@@ -38,6 +43,7 @@ public class UserServiceImpl implements UserService{
 
 
         User entityToSave = userMapper.dtoRequestToEntity(userRegistrationRequest);
+        entityToSave.setPassword(passwordEncoder.encode(entityToSave.getPassword()));
         entityToSave.setRoleId(User.UserType.ROLE_USER.getId());
         var defaultAPIs = apiDao.getAllAPIs().stream().map(apiMapper::dtoToEntity).toList();
         defaultAPIs.forEach(a -> a.getUsers().add(entityToSave));
@@ -97,10 +103,34 @@ public class UserServiceImpl implements UserService{
             throw new DuplicateException(userUpdateDTO.email() + "already taken");
 
         if(userUpdateDTO.email() != null) foundUser.setEmail(userUpdateDTO.email());
-        if(userUpdateDTO.username() != null) foundUser.setUsername(userUpdateDTO.username());
+        if(userUpdateDTO.username() != null) foundUser.setApiQuestUsername(userUpdateDTO.username());
         if(userUpdateDTO.password() != null) foundUser.setPassword(userUpdateDTO.password());
+
         foundUser.setUpdatedAt(LocalDateTime.now());
 
         return userMapper.entityToUpdateDto(foundUser);
+    }
+
+
+    @Override
+    public UserInfo getMyProfile(Authentication authentication){
+        UserInfo user  = userMapper.entityToUserInfo(
+                userDAO.findUserByEmail(authentication.getName()).orElseThrow()
+        );
+
+        user.setApiSet(
+                Set.copyOf(DefaultAPIs.appendDefaultApis(userMapper.userInfoToEntity(user), apiMapper))
+        );
+
+        user.setUserType(user.getUserType().substring(5));
+
+        return user;
+    }
+
+
+    @Override
+    @Transactional
+    public void increaseScore(Authentication authentication){
+        userDAO.increaseScore(authentication.getName());
     }
 }

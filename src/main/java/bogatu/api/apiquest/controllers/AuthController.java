@@ -31,7 +31,6 @@ import java.util.Optional;
 public class AuthController {
 
     private final UserService userService;
-//    private final APIQuestAuthProvider authProvider;
     private final UserValidatorService validatorService;
     private final PasswordEncoder passwordEncoder;
 
@@ -39,13 +38,7 @@ public class AuthController {
     @PostMapping("/register")
     ResponseEntity<UserRegistrationResponse> registerUser(@RequestBody @Validated UserRegistrationRequest request, Errors errors){
         validatorService.formatErrorsIfAny(errors);
-        var requestWithEncodedPass = new UserRegistrationRequest(
-                request.username(),
-                passwordEncoder.encode(request.password()),
-                request.email(),
-                request.createdAt()
-        );
-        return new ResponseEntity<>(userService.registerUser(requestWithEncodedPass), HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.registerUser(request), HttpStatus.CREATED);
     }
 
 

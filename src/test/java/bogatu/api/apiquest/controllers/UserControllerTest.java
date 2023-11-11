@@ -87,15 +87,15 @@ class UserControllerTest {
     @ValueSource(ints = {1, 5, 10})
     void test1(int objects) throws Exception {
 
-//        given(userService.getAllUsers(0))
-//                .willReturn(
-//                        InstanceProvider.UserProvider.userInfos().limit(objects).toList()
-//                );
-//
-//        mockMvc.perform(get("/api/users?pageNumber=0").accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$.length()", is(objects)));
+        given(userService.getAllUsers(0))
+                .willReturn(
+                        InstanceProvider.UserProvider.userInfos().limit(objects).toList()
+                );
+
+        mockMvc.perform(get("/api/users?pageNumber=0").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()", is(objects)));
     }
 
 

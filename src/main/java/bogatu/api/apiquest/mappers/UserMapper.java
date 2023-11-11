@@ -11,4 +11,5 @@ public interface UserMapper {
     UserUpdateDTO entityToUpdateDto(User user);
     User updateDtoToEntity(UserUpdateDTO userUpdateDTO);
     UserInfo entityToUserInfo(User user);
+    User userInfoToEntity(UserInfo userInfo);
 }

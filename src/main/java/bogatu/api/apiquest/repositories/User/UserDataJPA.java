@@ -41,4 +41,9 @@ public non-sealed class UserDataJPA implements UserDAO{
     public void deleteUser(int id) {
         repo.deleteById(id);
     }
+
+    @Override
+    public void increaseScore(String email){
+        repo.increaseScore(email);
+    }
 }

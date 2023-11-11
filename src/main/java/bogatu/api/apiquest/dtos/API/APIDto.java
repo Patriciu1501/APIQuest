@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public record APIDto(String name,
                      String endpoint,
                      @JsonFormat(pattern = "dd MMM, YYYY 'at' HH:mm")
+                     @JsonInclude(JsonInclude.Include.NON_NULL)
                      @JsonProperty("registrationTime")
                      LocalDateTime createdAt,
                      @JsonFormat(pattern = "dd MMM, YYYY 'at' HH:mm")

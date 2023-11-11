@@ -17,6 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -33,13 +35,15 @@ class UserServiceImplTest {
     UserMapper userMapper;
     @Mock
     APIMapper apiMapper;
+    PasswordEncoder passwordEncoder;
     UserServiceImpl underTest;
 
     @BeforeEach
     void beforeEach(){
         userDAO = Mockito.mock(UserDataJPA.class);
         apiDao = Mockito.mock(APIDataJpa.class);
-        underTest = new UserServiceImpl(userDAO, apiDao, userMapper, apiMapper);
+        passwordEncoder = Mockito.mock(BCryptPasswordEncoder.class);
+        underTest = new UserServiceImpl(userDAO, apiDao, userMapper, apiMapper, passwordEncoder);
     }
 
 

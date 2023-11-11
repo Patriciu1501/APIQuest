@@ -25,7 +25,8 @@ public class APIController {
     }
 
     @GetMapping
-    public ResponseEntity<List<APIDto>> getAllAPis(){
+    public ResponseEntity<List<APIDto>> getAllAPIs(){
         return new ResponseEntity<>(apiService.getAllAPIs(), HttpStatus.OK);
     }
+
 }
