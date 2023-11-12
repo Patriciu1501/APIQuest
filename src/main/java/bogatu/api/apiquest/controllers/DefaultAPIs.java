@@ -7,22 +7,26 @@ import bogatu.api.apiquest.services.User.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @RestController
-@RequestMapping("/api/defaultApis")
+@RequestMapping(DefaultAPIs.DEFAULT_APIS_PATH)
 @RequiredArgsConstructor
 public class DefaultAPIs {
 
+    public static final String DEFAULT_APIS_PATH = "/api/defaultApis";
     public static final String[] apis = {"RandomNumber", "PositiveAffirmation"};
+    public static final int RANDOM_NUMBER_SCORE = 1;
+    public static final int POSITIVE_AFFIRMATION_SCORE = 1;
+    public static final int BST_PRINT_SCORE = 1;
+    public static final int BST_ADD_SCORE = 2;
+
 
     private final UserService userService;
 
@@ -30,7 +34,7 @@ public class DefaultAPIs {
     public ResponseEntity<?> randomNumber(@RequestParam(required = false) Integer min,
                                           @RequestParam(required = false) Integer max,
                                           Authentication authentication){
-        userService.increaseScore(authentication);
+        userService.increaseScore(authentication, RANDOM_NUMBER_SCORE);
 
         Map<String, ?> body = Map.ofEntries(
                 Map.entry("API", apis[0]),
@@ -44,7 +48,7 @@ public class DefaultAPIs {
 
     @GetMapping("/positiveAffirmation")
     public ResponseEntity<?> positiveAffirmation(Authentication authentication){
-        userService.increaseScore(authentication);
+        userService.increaseScore(authentication, POSITIVE_AFFIRMATION_SCORE);
 
         String[] affirmations = {"You look great today", "Don't give up", "You remind me of the sun"};
 
@@ -66,42 +70,4 @@ public class DefaultAPIs {
     }
 
 
-    @RestController
-    @RequestMapping("/api/defaultApis/binaryTree")
-    static class BinaryTreeGame{
-
-        static class BinaryTree{
-
-            static class Node{
-                int value;
-                Node left;
-                Node right;
-
-                public Node(int value, Node left, Node right){
-                    this.value = value;
-                    this.left = left;
-                    this.right = right;
-                }
-            }
-
-            private Node head;
-
-            public boolean addNode(int value){
-                return false;
-            }
-
-
-            private void addNode(Node head, int value){
-                if(head == null) return;
-
-
-            }
-        }
-
-        private final BinaryTree binaryTree = new BinaryTree();
-
-
-        // define request mappings for binary tree operations
-
-    }
 }

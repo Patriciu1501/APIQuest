@@ -51,9 +51,12 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
 
                 String username = claims.get("username", String.class);
                 String authorities = claims.get("authorities", String.class);
+                int score = claims.get("score", Integer.class);
 
-                Authentication auth = new UsernamePasswordAuthenticationToken(username, null,
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null,
                         AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
+
+                auth.setDetails(score);
 
                 var context = SecurityContextHolder.createEmptyContext();
                 context.setAuthentication(auth);

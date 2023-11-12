@@ -13,5 +13,5 @@ public interface UserService {
     UserUpdateDTO updateUser(UserUpdateDTO userUpdateDTO, int id);
     UserInfo findUserById(int id);
     UserInfo getMyProfile(Authentication authentication);
-    void increaseScore(Authentication authentication);
+    void increaseScore(Authentication authentication, int toAdd);
 }

@@ -28,7 +28,6 @@ public class ProfileController {
         return new ResponseEntity<>(apiService.getMyAPIs(authentication), HttpStatus.OK);
     }
 
-
     @GetMapping
     public ResponseEntity<UserInfo> getMyProfile(Authentication authentication){
         return ResponseEntity.ok(userService.getMyProfile(authentication));

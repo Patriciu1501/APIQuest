@@ -44,8 +44,8 @@ public interface UserRepoDataJPA extends JpaRepository<User, Integer> {
 
 
     @Query(value = """
-            UPDATE User u SET u.score = u.score + 1 WHERE u.email = ?1""")
+            UPDATE User u SET u.score = u.score + ?2 WHERE u.email = ?1""")
     @Modifying
-    void increaseScore(String email);
+    void increaseScore(String email, int toAdd);
 
 }

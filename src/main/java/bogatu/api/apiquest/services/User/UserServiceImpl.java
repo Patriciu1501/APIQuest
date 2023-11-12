@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService{
     public UserUpdateDTO updateUser(UserUpdateDTO userUpdateDTO, int id){
         User foundUser = userDAO.findUserById(id).orElseThrow(() -> new UserNotFoundException(id + " not found"));
 
-        Stream.of(userUpdateDTO.username(), userUpdateDTO.email(), userUpdateDTO.password())
+        Stream.of(userUpdateDTO.apiQuestUsername(), userUpdateDTO.email(), userUpdateDTO.password())
                 .filter(Objects::nonNull)
                 .findAny()
                 .orElseThrow(() -> new RequestValidationException("Empty body provided"));
@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService{
             throw new DuplicateException(userUpdateDTO.email() + "already taken");
 
         if(userUpdateDTO.email() != null) foundUser.setEmail(userUpdateDTO.email());
-        if(userUpdateDTO.username() != null) foundUser.setApiQuestUsername(userUpdateDTO.username());
+        if(userUpdateDTO.apiQuestUsername() != null) foundUser.setApiQuestUsername(userUpdateDTO.apiQuestUsername());
         if(userUpdateDTO.password() != null) foundUser.setPassword(userUpdateDTO.password());
 
         foundUser.setUpdatedAt(LocalDateTime.now());
@@ -130,7 +130,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public void increaseScore(Authentication authentication){
-        userDAO.increaseScore(authentication.getName());
+    public void increaseScore(Authentication authentication, int toAdd){
+        userDAO.increaseScore(authentication.getName(), toAdd);
     }
 }

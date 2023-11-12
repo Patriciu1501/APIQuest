@@ -1,5 +1,6 @@
 package bogatu.api.apiquest.config.filters;
 
+import bogatu.api.apiquest.entities.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
@@ -7,6 +8,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -50,6 +53,7 @@ public class JWTGeneratorFilter extends OncePerRequestFilter {
                     .claim("authorities", auth.getAuthorities().stream()
                             .map(GrantedAuthority::getAuthority)
                             .collect(Collectors.joining(",")))
+                    .claim("score", auth.getDetails())
                     .setIssuedAt(new Date())
                     .signWith(key)
                     .compact();

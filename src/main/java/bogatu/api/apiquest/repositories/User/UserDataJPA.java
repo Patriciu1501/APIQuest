@@ -43,7 +43,7 @@ public non-sealed class UserDataJPA implements UserDAO{
     }
 
     @Override
-    public void increaseScore(String email){
-        repo.increaseScore(email);
+    public void increaseScore(String email, int toAdd){
+        repo.increaseScore(email, toAdd);
     }
 }
