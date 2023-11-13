@@ -28,7 +28,7 @@ class UserMapperTest {
         var dtoRegResponse = userMapper.entityToDtoResponse(user);
 
         assertThat(dtoRegResponse.id()).isEqualTo(user.getId());
-        assertThat(dtoRegResponse.username()).isEqualTo(user.getUsername());
+        assertThat(dtoRegResponse.apiQuestUsername()).isEqualTo(user.getUsername());
         assertThat(dtoRegResponse.email()).isEqualTo(user.getEmail());
         assertThat(dtoRegResponse.createdAt()).isEqualTo(user.getCreatedAt());
     }

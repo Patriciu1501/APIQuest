@@ -20,7 +20,7 @@ import java.util.Set;
 @Setter
 @NamedQuery(name = "API.getAllAPIs",
         query = """
-            SELECT new bogatu.api.apiquest.dtos.API.APIDto(a.name, a.endpoint, a.createdAt, a.updatedAt)
+            SELECT new bogatu.api.apiquest.dtos.API.APIDto(a.name, a.endpoint, a.score, a.isDefault, a.createdAt, a.updatedAt)
             FROM API a""")
 public class API extends GenericEntity{
 
@@ -31,7 +31,9 @@ public class API extends GenericEntity{
     private int id;
     private String name;
     private String endpoint;
-
+    @Column(name = "is_default")
+    private boolean isDefault;
+    private int score;
 
     @ManyToMany(mappedBy = "apiSet")
     @JsonIgnore
@@ -39,11 +41,14 @@ public class API extends GenericEntity{
 
 
     @Builder
-    public API(int id, String name, String endpoint, LocalDateTime createdAt, LocalDateTime updatedAt){
+    public API(int id, String name, String endpoint, int score, boolean isDefault,
+               LocalDateTime createdAt, LocalDateTime updatedAt){
         super(createdAt, updatedAt);
         this.id = id;
         this.name = name;
         this.endpoint = endpoint;
+        this.score = score;
+        this.isDefault = isDefault;
     }
 
 }

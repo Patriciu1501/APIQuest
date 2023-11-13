@@ -4,6 +4,7 @@ import bogatu.api.apiquest.controllers.AuthController;
 import bogatu.api.apiquest.controllers.DefaultAPIs;
 import bogatu.api.apiquest.dtos.API.APIDto;
 import bogatu.api.apiquest.dtos.User.UserInfo;
+import bogatu.api.apiquest.entities.API;
 import bogatu.api.apiquest.entities.User;
 import bogatu.api.apiquest.mappers.APIMapper;
 import bogatu.api.apiquest.mappers.UserMapper;
@@ -32,9 +33,29 @@ public class APIServiceImpl implements APIService{
 
     @Transactional
     public APIDto registerAPI(APIDto request){
-        return apiMapper.entityToDto(
-                apiDao.registerAPI(apiMapper.dtoToEntity(request))
-        );
+        // in momentul cand inregistrezi un default api
+        // adauga-l tututor user-ilor
+
+        // sa vezi eroarea care ai avut-o inainte, object references transient instance
+        // sa pui salvarea api-ului in return cum era inainte
+
+
+        var users = userDAO.getAllUsers(0, Integer.MAX_VALUE);
+
+        API api = apiMapper.dtoToEntity(request);
+
+        apiDao.registerAPI(api);
+
+        if(api.isDefault()) {
+            users.forEach(u -> {
+                u.getApiSet().add(api);
+                api.getUsers().add(u);
+                userDAO.registerUser(u);
+            });
+        }
+
+
+        return apiMapper.entityToDto(api);
     }
 
 
@@ -45,5 +66,9 @@ public class APIServiceImpl implements APIService{
 
     public List<APIDto> getAllAPIs(){
         return apiDao.getAllAPIs();
+    }
+
+    public List<APIDto> getAllDefaults(){
+        return apiDao.getAllDefaults();
     }
 }

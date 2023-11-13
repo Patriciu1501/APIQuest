@@ -64,7 +64,7 @@ public class DefaultAPIs {
     public static List<APIDto> appendDefaultApis(User user, APIMapper apiMapper){
        return Stream.concat(user.getApiSet().stream().map(apiMapper::entityToDto),
                         Arrays.stream(DefaultAPIs.apis).map(
-                                s -> new APIDto(s, "/api/defaultApis/" + s.substring(0, 1).toLowerCase() + s.substring(1), null, null)
+                                s -> new APIDto(s, "/api/defaultApis/" + s.substring(0, 1).toLowerCase() + s.substring(1), -1, true, null, null)
                         ))
                 .toList();
     }

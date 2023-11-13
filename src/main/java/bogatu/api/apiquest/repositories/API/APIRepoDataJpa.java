@@ -14,4 +14,9 @@ public interface APIRepoDataJpa extends JpaRepository<API, Integer> {
     @Transactional(readOnly = true)
     List<APIDto> getAllAPIs();
 
+
+    @Query("""
+            SELECT new bogatu.api.apiquest.dtos.API.APIDto(a.name, a.endpoint, a.isDefault, a.score, a.createdAt, a.updatedAt) FROM API a
+            WHERE a.isDefault = true""")
+    List<APIDto> getAllDefaults();
 }

@@ -5,6 +5,7 @@ import bogatu.api.apiquest.entities.User;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
 
@@ -14,4 +15,5 @@ public interface UserService {
     UserInfo findUserById(int id);
     UserInfo getMyProfile(Authentication authentication);
     void increaseScore(Authentication authentication, int toAdd);
+    Optional<?> invokeMyAPI(String apiName, Authentication authentication);
 }

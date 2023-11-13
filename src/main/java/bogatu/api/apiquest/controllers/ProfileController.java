@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,8 +29,18 @@ public class ProfileController {
         return new ResponseEntity<>(apiService.getMyAPIs(authentication), HttpStatus.OK);
     }
 
+
     @GetMapping
     public ResponseEntity<UserInfo> getMyProfile(Authentication authentication){
         return ResponseEntity.ok(userService.getMyProfile(authentication));
     }
+
+
+    @GetMapping("/apis/{apiName}")
+    ResponseEntity<?> invokeMyAPI(@PathVariable String apiName, Authentication authentication){
+        return ResponseEntity.ok(userService.invokeMyAPI(apiName, authentication));
+    }
+
+
+
 }

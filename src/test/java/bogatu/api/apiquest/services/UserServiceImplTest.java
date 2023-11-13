@@ -43,7 +43,7 @@ class UserServiceImplTest {
         userDAO = Mockito.mock(UserDataJPA.class);
         apiDao = Mockito.mock(APIDataJpa.class);
         passwordEncoder = Mockito.mock(BCryptPasswordEncoder.class);
-        underTest = new UserServiceImpl(userDAO, apiDao, userMapper, apiMapper, passwordEncoder);
+        underTest = new UserServiceImpl(userDAO, apiDao, userMapper, apiMapper, passwordEncoder, null);
     }
 
 
