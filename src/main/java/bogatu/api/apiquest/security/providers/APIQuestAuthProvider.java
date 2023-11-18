@@ -1,4 +1,4 @@
-package bogatu.api.apiquest.config;
+package bogatu.api.apiquest.security.providers;
 
 import bogatu.api.apiquest.entities.User;
 import bogatu.api.apiquest.repositories.User.UserDAO;

@@ -1,12 +1,14 @@
-package bogatu.api.apiquest.config.filters;
+package bogatu.api.apiquest.security.filters;
 
 import bogatu.api.apiquest.entities.User;
+import bogatu.api.apiquest.security.services.JwtService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpHeaders;
@@ -25,54 +27,25 @@ import java.util.stream.Collectors;
 
 
 @Component
+@RequiredArgsConstructor
 public class JWTGeneratorFilter extends OncePerRequestFilter {
 
-    private final String jwtKey;
-
-    private final long expiration;
-    private final long refreshExpiration;
-
-    public JWTGeneratorFilter(@Value("${apiquest.jwt.secretSigningKey}") String jwtKey,
-                              @Value("${apiquest.jwt.expiration}") long accessExpiration,
-                              @Value("${apiquest.jwt.refreshToken}") long refreshExpiration){
-        this.jwtKey = jwtKey;
-        this.expiration = accessExpiration;
-        this.refreshExpiration = refreshExpiration;
-    }
+    private final JwtService jwtService;
 
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return !(request.getServletPath().equals("/api/auth/login")
-                || request.getServletPath().equals("/api/auth/refreshToken"));
+        return !request.getServletPath().equals("/api/auth/login");
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
         if (auth != null) {
-            SecretKey key = Keys.hmacShaKeyFor(jwtKey.getBytes(StandardCharsets.UTF_8));
-            String jwt = Jwts.builder()
-                    .setIssuer("API-QUEST")
-                    .setSubject("JWT Token")
-                    .claim("username", auth.getName())
-                    .claim("authorities", auth.getAuthorities().stream()
-                            .map(GrantedAuthority::getAuthority)
-                            .collect(Collectors.joining(",")))
-                    .claim("score", auth.getDetails())
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                    .signWith(key)
-                    .compact();
-
-            response.setHeader(HttpHeaders.AUTHORIZATION, jwt);
-        }else{
-            String refreshToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-
+            var token = jwtService.generateToken(auth, null);
+            response.setHeader(HttpHeaders.AUTHORIZATION, token.accessToken());
+            if(auth instanceof UsernamePasswordAuthenticationToken u) u.setDetails(token);
         }
-
         filterChain.doFilter(request, response);
     }
 }
