@@ -11,6 +11,9 @@ import bogatu.api.apiquest.mappers.UserMapper;
 import bogatu.api.apiquest.repositories.API.APIDao;
 import bogatu.api.apiquest.repositories.API.APIRepoDataJpa;
 import bogatu.api.apiquest.repositories.User.UserDAO;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -31,29 +34,18 @@ public class APIServiceImpl implements APIService{
     private final APIMapper apiMapper;
     private final UserDAO userDAO;
 
+
     @Transactional
     public APIDto registerAPI(APIDto request){
-        // in momentul cand inregistrezi un default api
-        // adauga-l tututor user-ilor
-
-        // sa vezi eroarea care ai avut-o inainte, object references transient instance
-        // sa pui salvarea api-ului in return cum era inainte
-
-
-        var users = userDAO.getAllUsers(0, Integer.MAX_VALUE);
-
         API api = apiMapper.dtoToEntity(request);
 
-        apiDao.registerAPI(api);
-
-        if(api.isDefault()) {
-            users.forEach(u -> {
-                u.getApiSet().add(api);
-                api.getUsers().add(u);
-                userDAO.registerUser(u);
-            });
+        if(api.isDefault()){
+            var users = userDAO.getAllUsers(0, Integer.MAX_VALUE);
+            api.getUsers().addAll(users);
+            users.forEach(u -> u.getApiSet().add(api));
         }
 
+        apiDao.registerAPI(api);
 
         return apiMapper.entityToDto(api);
     }
@@ -69,6 +61,8 @@ public class APIServiceImpl implements APIService{
     }
 
     public List<APIDto> getAllDefaults(){
-        return apiDao.getAllDefaults();
+        return apiDao.getAllDefaults()
+                .stream()
+                .map(apiMapper::entityToDto).collect(Collectors.toList());
     }
 }

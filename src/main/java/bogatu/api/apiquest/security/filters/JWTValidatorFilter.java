@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 public class JWTValidatorFilter extends OncePerRequestFilter {
 
     private final String JWT_KEY;
+    public static final String BEARER_PREFIX = "Bearer ";
 
 
     public JWTValidatorFilter(@Value("${apiquest.jwt.secretSigningKey}") String JWT_KEY){
@@ -37,16 +39,16 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String jwt = request.getHeader("Authorization");
+        String jwt = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if(jwt != null){
+        if(jwt != null && jwt.startsWith(BEARER_PREFIX)){
             try{
                 SecretKey key = Keys.hmacShaKeyFor(JWT_KEY.getBytes(StandardCharsets.UTF_8));
 
                 Claims claims = Jwts.parserBuilder()
                         .setSigningKey(key)
                         .build()
-                        .parseClaimsJws(jwt)
+                        .parseClaimsJws(jwt.substring(BEARER_PREFIX.length()))
                         .getBody();
 
                 String username = claims.get("username", String.class);

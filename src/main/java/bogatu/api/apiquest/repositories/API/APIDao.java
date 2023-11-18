@@ -11,5 +11,5 @@ public interface APIDao {
 
     List<APIDto> getAllAPIs();
 
-    List<APIDto> getAllDefaults();
+    List<API> getAllDefaults();
 }

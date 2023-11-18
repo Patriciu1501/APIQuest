@@ -44,10 +44,7 @@ public class UserServiceImpl implements UserService{
         User entityToSave = userMapper.dtoRequestToEntity(userRegistrationRequest);
         entityToSave.setPassword(passwordEncoder.encode(entityToSave.getPassword()));
         entityToSave.setRoleId(User.UserType.ROLE_USER.getId());
-        var defaultAPIs = apiDao.getAllAPIs()
-                .stream()
-                .map(apiMapper::dtoToEntity)
-                .toList();
+        var defaultAPIs = apiDao.getAllDefaults();
 
         defaultAPIs.forEach(a -> a.getUsers().add(entityToSave));
         entityToSave.setApiSet(Set.copyOf(defaultAPIs));
@@ -147,7 +144,7 @@ public class UserServiceImpl implements UserService{
                 .findFirst()
                 .orElseThrow(() -> new RequestValidationException("User does not have this api"));
 
-        increaseScore(authentication, api.getScore());
+        user.setScore(user.getScore() + api.getScore());
 
         var result = restTemplate.getForEntity(api.getEndpoint(), HashMap.class)
                 .getBody();

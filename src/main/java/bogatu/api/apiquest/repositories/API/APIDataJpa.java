@@ -29,7 +29,7 @@ public class APIDataJpa implements APIDao {
 
 
     @Cacheable("defaultApis")
-    public List<APIDto> getAllDefaults(){
+    public List<API> getAllDefaults(){
         return apiRepoDataJpa.getAllDefaults();
     }
 }

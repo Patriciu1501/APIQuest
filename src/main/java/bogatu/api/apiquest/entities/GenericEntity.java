@@ -29,9 +29,12 @@ public class GenericEntity {
     private LocalDateTime updatedAt;
 
 
+
     @Override
     public boolean equals(Object o){
         if(!(o instanceof GenericEntity g)) return false;
+
+        if(updatedAt == null && g.createdAt != null) return false;
 
         return this.createdAt.equals(g.createdAt)
                 && this.updatedAt.equals(g.updatedAt);

@@ -19,8 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class APIQuestAuthProvider implements AuthenticationProvider {
 
-    private final UserDAO userDAO;
-    private final PasswordEncoder passwordEncoder;
     private final UserDetailsService userDetailsService;
 
     @Override
