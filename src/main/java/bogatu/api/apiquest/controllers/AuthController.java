@@ -1,20 +1,15 @@
 package bogatu.api.apiquest.controllers;
 
-import bogatu.api.apiquest.config.APIQuestAuthProvider;
 import bogatu.api.apiquest.dtos.User.UserRegistrationRequest;
 import bogatu.api.apiquest.dtos.User.UserRegistrationResponse;
 import bogatu.api.apiquest.services.User.UserService;
 import bogatu.api.apiquest.services.User.UserValidatorService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -23,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -32,7 +26,6 @@ public class AuthController {
 
     private final UserService userService;
     private final UserValidatorService validatorService;
-    private final PasswordEncoder passwordEncoder;
 
 
     @PostMapping("/register")
@@ -53,9 +46,14 @@ public class AuthController {
                 Map.entry("Message", "Failed to log in")
         );
 
-        return authentication != null ? ResponseEntity.ok("Logged in")
+        return authentication != null ? ResponseEntity.ok(authentication.getDetails())
                 : ResponseEntity.badRequest().body(mapForFailedScenario);
     }
 
+
+    @GetMapping("/refreshToken")
+    ResponseEntity<?> refreshToken(Authentication authentication){
+        return ResponseEntity.ok(authentication.getDetails());
+    }
 
 }

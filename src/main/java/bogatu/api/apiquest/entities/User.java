@@ -86,7 +86,6 @@ public class User extends GenericEntity implements UserDetails {
     }
 
 
-    // by default lombok overrides it, hence it returns the actual entity username instead of email
     @Override
     public String getUsername(){
         return this.email;
