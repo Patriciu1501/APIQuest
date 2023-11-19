@@ -14,4 +14,9 @@ public interface APIRepoDataJpa extends JpaRepository<API, Integer> {
     @Transactional(readOnly = true)
     List<APIDto> getAllAPIs();
 
+
+    @Query("""
+            SELECT a FROM API a
+            WHERE a.isDefault = true""")
+    List<API> getAllDefaults();
 }

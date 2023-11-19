@@ -15,12 +15,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Service
@@ -33,6 +31,7 @@ public class UserServiceImpl implements UserService{
     private final UserMapper userMapper;
     private final APIMapper apiMapper;
     private final PasswordEncoder passwordEncoder;
+    private final RestTemplate restTemplate;
 
 
     @Transactional
@@ -45,7 +44,8 @@ public class UserServiceImpl implements UserService{
         User entityToSave = userMapper.dtoRequestToEntity(userRegistrationRequest);
         entityToSave.setPassword(passwordEncoder.encode(entityToSave.getPassword()));
         entityToSave.setRoleId(User.UserType.ROLE_USER.getId());
-        var defaultAPIs = apiDao.getAllAPIs().stream().map(apiMapper::dtoToEntity).toList();
+        var defaultAPIs = apiDao.getAllDefaults();
+
         defaultAPIs.forEach(a -> a.getUsers().add(entityToSave));
         entityToSave.setApiSet(Set.copyOf(defaultAPIs));
 
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService{
                 userDAO.findUserByEmail(authentication.getName()).orElseThrow()
         );
 
-        user.setApiSet(
+        user.getApiSet().addAll(
                 Set.copyOf(DefaultAPIs.appendDefaultApis(userMapper.userInfoToEntity(user), apiMapper))
         );
 
@@ -132,5 +132,23 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public void increaseScore(Authentication authentication, int toAdd){
         userDAO.increaseScore(authentication.getName(), toAdd);
+    }
+
+
+    @Transactional
+    public Optional<?> invokeMyAPI(String apiName, Authentication authentication){
+        User user = userDAO.findUserByEmail(authentication.getName()).orElseThrow();
+
+        var api = user.getApiSet().stream()
+                .filter(a -> a.getName().equals(apiName))
+                .findFirst()
+                .orElseThrow(() -> new RequestValidationException("User does not have this api"));
+
+        user.setScore(user.getScore() + api.getScore());
+
+        var result = restTemplate.getForEntity(api.getEndpoint(), HashMap.class)
+                .getBody();
+
+        return Optional.ofNullable(result);
     }
 }

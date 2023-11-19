@@ -10,4 +10,6 @@ public interface APIDao {
     API registerAPI(API api);
 
     List<APIDto> getAllAPIs();
+
+    List<API> getAllDefaults();
 }

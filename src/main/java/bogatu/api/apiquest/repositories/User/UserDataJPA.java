@@ -1,5 +1,6 @@
 package bogatu.api.apiquest.repositories.User;
 
+import bogatu.api.apiquest.dtos.API.APIDto;
 import bogatu.api.apiquest.dtos.User.UserInfo;
 import bogatu.api.apiquest.dtos.User.UserInfoProjection;
 import bogatu.api.apiquest.entities.User;

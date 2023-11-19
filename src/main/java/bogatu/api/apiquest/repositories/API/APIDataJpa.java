@@ -17,7 +17,7 @@ public class APIDataJpa implements APIDao {
 
     private final APIRepoDataJpa apiRepoDataJpa;
 
-    @CacheEvict(value = "apis", allEntries = true)
+    @CacheEvict(value = {"apis", "defaultApis"}, allEntries = true)
     public API registerAPI(API api){
         return apiRepoDataJpa.save(api);
     }
@@ -25,5 +25,11 @@ public class APIDataJpa implements APIDao {
     @Cacheable("apis")
     public List<APIDto> getAllAPIs(){
         return apiRepoDataJpa.getAllAPIs();
+    }
+
+
+    @Cacheable("defaultApis")
+    public List<API> getAllDefaults(){
+        return apiRepoDataJpa.getAllDefaults();
     }
 }

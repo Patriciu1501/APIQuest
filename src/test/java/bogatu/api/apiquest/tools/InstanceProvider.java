@@ -55,7 +55,7 @@ public final class InstanceProvider {
 
         public static UserRegistrationRequest randomRequest(){
             return UserRegistrationRequest.builder()
-                    .username(faker.name().username())
+                    .apiQuestUsername(faker.name().username())
                     .password(faker.internet().password())
                     .email(faker.internet().emailAddress())
                     .build();
@@ -66,7 +66,7 @@ public final class InstanceProvider {
             return UserRegistrationResponse
                     .builder()
                     .id(new Random().nextInt())
-                    .username(faker.name().username())
+                    .apiQuestUsername(faker.name().username())
                     .email(faker.internet().emailAddress())
                     .createdAt(LocalDateTime.now())
                     .build();

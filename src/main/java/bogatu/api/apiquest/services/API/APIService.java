@@ -14,6 +14,7 @@ public interface APIService {
 
     APIDto registerAPI(APIDto request);
     List<APIDto> getAllAPIs();
+    List<APIDto> getAllDefaults();
 
     List<APIDto> getMyAPIs(Authentication authentication);
 }

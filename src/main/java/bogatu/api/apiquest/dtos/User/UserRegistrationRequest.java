@@ -1,5 +1,6 @@
 package bogatu.api.apiquest.dtos.User;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
 
@@ -7,8 +8,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Builder
-public record UserRegistrationRequest (@NotNull @Size(min = 5)
-                                       String username,
+public record UserRegistrationRequest (@NotNull
+                                       @Size(min = 5)
+                                       @JsonProperty("username")
+                                       String apiQuestUsername,
                                        @NotNull @Pattern(
                                                regexp = "^(?=.*[A-Za-z])(?=.*\\d).{10,}$",
                                                message = "The password must have min length 10 " +

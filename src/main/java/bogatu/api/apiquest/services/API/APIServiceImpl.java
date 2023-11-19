@@ -4,12 +4,16 @@ import bogatu.api.apiquest.controllers.AuthController;
 import bogatu.api.apiquest.controllers.DefaultAPIs;
 import bogatu.api.apiquest.dtos.API.APIDto;
 import bogatu.api.apiquest.dtos.User.UserInfo;
+import bogatu.api.apiquest.entities.API;
 import bogatu.api.apiquest.entities.User;
 import bogatu.api.apiquest.mappers.APIMapper;
 import bogatu.api.apiquest.mappers.UserMapper;
 import bogatu.api.apiquest.repositories.API.APIDao;
 import bogatu.api.apiquest.repositories.API.APIRepoDataJpa;
 import bogatu.api.apiquest.repositories.User.UserDAO;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -30,11 +34,20 @@ public class APIServiceImpl implements APIService{
     private final APIMapper apiMapper;
     private final UserDAO userDAO;
 
+
     @Transactional
     public APIDto registerAPI(APIDto request){
-        return apiMapper.entityToDto(
-                apiDao.registerAPI(apiMapper.dtoToEntity(request))
-        );
+        API api = apiMapper.dtoToEntity(request);
+
+        if(api.isDefault()){
+            var users = userDAO.getAllUsers(0, Integer.MAX_VALUE);
+            api.getUsers().addAll(users);
+            users.forEach(u -> u.getApiSet().add(api));
+        }
+
+        apiDao.registerAPI(api);
+
+        return apiMapper.entityToDto(api);
     }
 
 
@@ -45,5 +58,11 @@ public class APIServiceImpl implements APIService{
 
     public List<APIDto> getAllAPIs(){
         return apiDao.getAllAPIs();
+    }
+
+    public List<APIDto> getAllDefaults(){
+        return apiDao.getAllDefaults()
+                .stream()
+                .map(apiMapper::entityToDto).collect(Collectors.toList());
     }
 }
