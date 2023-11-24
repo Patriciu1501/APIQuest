@@ -39,8 +39,8 @@ public class JWTValidatorFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwt = request.getHeader(HttpHeaders.AUTHORIZATION);
         jwtService.validateToken(jwt);
-        if(!(SecurityContextHolder.getContext().getAuthentication().getDetails() instanceof JwtService.Token)
-             && request.getServletPath().equals("/api/auth/refreshToken")) {
+        if(request.getServletPath().equals("/api/auth/refreshToken") &&
+                !(SecurityContextHolder.getContext().getAuthentication().getDetails() instanceof JwtService.Token)){
             throw new MalformedJwtException("Received access token instead of refresh token");
         }
         filterChain.doFilter(request, response);

@@ -42,7 +42,7 @@ public class JWTGeneratorFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
-            var token = jwtService.generateToken(auth, null);
+            var token = jwtService.generateToken(auth);
             response.setHeader(HttpHeaders.AUTHORIZATION, token.accessToken());
             if(auth instanceof UsernamePasswordAuthenticationToken u) u.setDetails(token);
         }

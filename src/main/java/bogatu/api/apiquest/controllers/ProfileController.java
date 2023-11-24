@@ -40,7 +40,4 @@ public class ProfileController {
     ResponseEntity<?> invokeMyAPI(@PathVariable String apiName, Authentication authentication){
         return ResponseEntity.ok(userService.invokeMyAPI(apiName, authentication));
     }
-
-
-
 }

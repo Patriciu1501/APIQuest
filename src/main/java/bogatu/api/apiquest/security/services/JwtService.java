@@ -1,6 +1,8 @@
 package bogatu.api.apiquest.security.services;
 
+import bogatu.api.apiquest.documents.RefreshToken;
 import bogatu.api.apiquest.entities.User;
+import bogatu.api.apiquest.repositories.RefreshToken.RefreshTokenRepository;
 import bogatu.api.apiquest.repositories.User.UserDAO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -16,17 +18,19 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.sql.Ref;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
 
-
     private final String jwtKey;
     private final long expiration;
     private final long refreshExpiration;
     private final UserDAO userDAO;
+    private final RefreshTokenRepository refreshTokenRepository;
     public static final String BEARER_PREFIX = "Bearer ";
 
 
@@ -36,11 +40,12 @@ public class JwtService {
     public JwtService(@Value("${apiquest.jwt.secretSigningKey}") String jwtKey,
                       @Value("${apiquest.jwt.expiration}") long accessExpiration,
                       @Value("${apiquest.jwt.refreshToken}") long refreshExpiration,
-                      UserDAO userDAO){
+                      UserDAO userDAO, RefreshTokenRepository refreshTokenRepository){
         this.jwtKey = jwtKey;
         this.expiration = accessExpiration;
         this.refreshExpiration = refreshExpiration;
         this.userDAO = userDAO;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
 
@@ -87,29 +92,45 @@ public class JwtService {
     }
 
 
-    private void handleRefreshScenario(final Claims claims, final String jwtToken){
+    private void handleRefreshScenario(final Claims claims, String tokenValue){
         String username = claims.get("username", String.class);
 
         userDAO.findUserByEmail(username).ifPresentOrElse(
-                (final User u) -> {
-                    var auth = new UsernamePasswordAuthenticationToken(username, null);
+                u -> {
+                    var auth = new UsernamePasswordAuthenticationToken(username, null, u.getAuthorities());
+                    refreshTokenRepository.findById(tokenValue.substring(BEARER_PREFIX.length()))
+                                    .ifPresentOrElse(
+                                            t -> {
+                                                if(!t.isValid()) {
+                                                    throw new RuntimeException("Used revoked refresh token");
+                                                }
 
-                    auth.setDetails(
-                            generateToken(auth, jwtToken.substring(7))
-                    );
+                                                refreshTokenRepository.save(
+                                                        RefreshToken.builder()
+                                                                .value(tokenValue.substring(BEARER_PREFIX.length()))
+                                                                .valid(false)
+                                                                .build()
+                                                );
+                                            },
 
+                                            () ->{ throw new RuntimeException("No such token in the db");}
+                                    );
+
+                    Token details = generateToken(auth);
+
+                    var unauthenticatedToken = new UsernamePasswordAuthenticationToken(username, null);
+                    unauthenticatedToken.setDetails(details);
                     var context = SecurityContextHolder.createEmptyContext();
-                    context.setAuthentication(auth);
+                    context.setAuthentication(unauthenticatedToken);
                     SecurityContextHolder.setContext(context);
                 },
                 () -> {throw new RuntimeException("User is no longer valid");});
-
     }
 
 
-    public Token generateToken(Authentication auth, String refreshToken){
+    public Token generateToken(Authentication auth){
         SecretKey key = Keys.hmacShaKeyFor(jwtKey.getBytes(StandardCharsets.UTF_8));
-        return new Token(generateAccessToken(auth, key), refreshToken == null ? generateRefreshToken(auth.getName(), key) : refreshToken);
+        return new Token(generateAccessToken(auth, key),generateRefreshToken(auth.getName(), key));
     }
 
 
@@ -130,7 +151,7 @@ public class JwtService {
 
 
     private String generateRefreshToken(String username, SecretKey secretKey){
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setIssuer("API QUEST")
                 .setSubject("JWT Refresh")
                 .claim("username", username)
@@ -138,5 +159,13 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + refreshExpiration))
                 .signWith(secretKey)
                 .compact();
+
+        refreshTokenRepository.insert(
+                RefreshToken.builder()
+                        .value(token)
+                        .build()
+        );
+
+        return token;
     }
 }

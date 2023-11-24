@@ -11,6 +11,17 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
+  data:
+    mongodb:
+      username: patriciu
+      password: bogatu
+      host: localhost
+      port: 27017
+      database: nosql-apiquest
+      authentication-database: admin
+
+
+
 
 
 server:
