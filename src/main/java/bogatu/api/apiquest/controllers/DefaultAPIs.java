@@ -8,11 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @RestController
@@ -64,7 +60,7 @@ public class DefaultAPIs {
     public static List<APIDto> appendDefaultApis(User user, APIMapper apiMapper){
        return Stream.concat(user.getApiSet().stream().map(apiMapper::entityToDto),
                         Arrays.stream(DefaultAPIs.apis).map(
-                                s -> new APIDto(s, "/api/defaultApis/" + s.substring(0, 1).toLowerCase() + s.substring(1), -1, true, null, null)
+                                s -> new APIDto(s, "/api/defaultApis/" + s.substring(0, 1).toLowerCase() + s.substring(1), 1, true, null, null)
                         ))
                 .toList();
     }
