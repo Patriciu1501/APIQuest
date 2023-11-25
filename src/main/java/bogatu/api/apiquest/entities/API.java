@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.jpa.repository.EntityGraph;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ import java.util.Set;
         query = """
             SELECT new bogatu.api.apiquest.dtos.API.APIDto(a.name, a.endpoint, a.score, a.isDefault, a.createdAt, a.updatedAt)
             FROM API a""")
+@SuperBuilder
 public class API extends GenericEntity{
 
     @SequenceGenerator(name = "api_id_generator", sequenceName = "apis_id_seq", allocationSize = 1)
@@ -36,19 +38,6 @@ public class API extends GenericEntity{
     private int score;
 
     @ManyToMany(mappedBy = "apiSet")
-    @JsonIgnore
+    @Builder.Default
     private Set<User> users = new HashSet<>();
-
-
-    @Builder
-    public API(int id, String name, String endpoint, int score, boolean isDefault,
-               LocalDateTime createdAt, LocalDateTime updatedAt){
-        super(createdAt, updatedAt);
-        this.id = id;
-        this.name = name;
-        this.endpoint = endpoint;
-        this.score = score;
-        this.isDefault = isDefault;
-    }
-
 }

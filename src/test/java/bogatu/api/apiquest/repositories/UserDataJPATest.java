@@ -41,7 +41,6 @@ class UserDataJPATest extends TestContainersTest {
                 .apiQuestUsername(givenUser.getUsername())
                 .password(givenUser.getPassword())
                 .email(givenUser.getEmail())
-                .userType(givenUser.getUserType())
                 .createdAt(givenUser.getCreatedAt())
                 .build();
 
@@ -56,7 +55,6 @@ class UserDataJPATest extends TestContainersTest {
             assertThat(c.getEmail()).isEqualTo(givenUser.getEmail());
             assertThat(c.getUsername()).isEqualTo(givenUser.getUsername());
             assertThat(c.getPassword()).isEqualTo(givenUser.getPassword());
-            assertThat(c.getUserType()).isEqualTo(givenUser.getUserType());
             assertThat(c.getCreatedAt()).isEqualTo(givenUser.getCreatedAt());
             assertThat(c.getId()).isEqualTo(toReturn.getId());
         });

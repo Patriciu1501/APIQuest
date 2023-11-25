@@ -36,7 +36,6 @@ public final class InstanceProvider {
                     .apiQuestUsername(faker.name().username())
                     .password(faker.internet().password(true))
                     .email(faker.internet().emailAddress())
-                    .userType(User.UserType.ROLE_USER)
                     .createdAt(LocalDateTime.now())
                     .updatedAt(LocalDateTime.now())
                     .build();
