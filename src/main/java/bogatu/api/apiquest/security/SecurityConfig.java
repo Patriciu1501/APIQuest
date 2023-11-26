@@ -1,6 +1,7 @@
 package bogatu.api.apiquest.security;
 
 
+import bogatu.api.apiquest.security.details.SecurityUser;
 import bogatu.api.apiquest.security.filters.JWTGeneratorFilter;
 import bogatu.api.apiquest.security.filters.JWTValidatorFilter;
 import bogatu.api.apiquest.exceptions.UserNotFoundException;
@@ -49,8 +50,10 @@ public class SecurityConfig{
     @Bean
     UserDetailsService userDetailsService(UserDAO userDAO){
         return u ->
-            userDAO.findUserByEmail(u).orElseThrow(
-                    () -> new UserNotFoundException("Not found")
+            new SecurityUser(
+                    userDAO.findUserByEmail(u).orElseThrow(
+                            () -> new UserNotFoundException("Not found")
+                    )
             );
     }
 

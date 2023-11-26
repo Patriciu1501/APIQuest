@@ -2,6 +2,8 @@ package bogatu.api.apiquest.security.providers;
 
 import bogatu.api.apiquest.entities.User;
 import bogatu.api.apiquest.repositories.User.UserDAO;
+import bogatu.api.apiquest.security.details.SecurityUser;
+import bogatu.api.apiquest.services.User.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,7 +33,7 @@ public class APIQuestAuthProvider implements AuthenticationProvider {
                 email, null, userDetails.getAuthorities()
         );
 
-        auth.setDetails(((User) userDetails).getScore());
+        auth.setDetails(((SecurityUser) userDetails).getScore());
 
         return auth;
     }

@@ -27,15 +27,14 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @SuperBuilder
-public class User extends GenericEntity implements UserDetails {
+public class User extends GenericEntity{
 
     @SequenceGenerator(name = "user_id_generator", sequenceName = "users_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_generator")
     @Column(columnDefinition = "BIGSERIAL")
     @Id
     private int id;
-    @Column(name = "username")
-    private String apiQuestUsername;
+    private String username;
     private String email;
     private String password;
     private int score;
@@ -56,45 +55,11 @@ public class User extends GenericEntity implements UserDetails {
     private Set<API> apiSet = new HashSet<>();
 
 
-
     @Override
     public boolean equals(Object o){
         if(!(o instanceof User u)) return false;
 
         return this.id == u.id
                 && this.email.equals(u.email);
-    }
-
-
-    @Override
-    public String getUsername(){
-        return this.email;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Set.of(
-                new SimpleGrantedAuthority(role.getName())
-        );
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 }

@@ -10,8 +10,7 @@ import java.time.format.DateTimeFormatter;
 @Builder
 public record UserRegistrationRequest (@NotNull
                                        @Size(min = 5)
-                                       @JsonProperty("username")
-                                       String apiQuestUsername,
+                                       String username,
                                        @NotNull @Pattern(
                                                regexp = "^(?=.*[A-Za-z])(?=.*\\d).{10,}$",
                                                message = "The password must have min length 10 " +

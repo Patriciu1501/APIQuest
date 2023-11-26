@@ -11,5 +11,10 @@ import org.mapstruct.Mapper;
 public interface APIMapper {
 
     API dtoToEntity(APIDto apiRegistrationRequest);
-    APIDto entityToDto(API api);
+    default APIDto entityToDto(API entity){
+        return new APIDto(
+                entity.getName(), entity.getEndpoint(), entity.getScore(), entity.isDefault(),
+                entity.getCreatedAt(), entity.getUpdatedAt()
+                );
+    }
 }

@@ -11,8 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @JsonPropertyOrder({"id", "username", "email", "createdAt"})
 public record UserRegistrationResponse(int id,
-                                       @JsonProperty("username")
-                                       String apiQuestUsername,
+                                       String username,
                                        String email,
                                        @JsonFormat(pattern = "dd MMM, YYYY 'at' HH:mm")
                                        @JsonProperty("registrationTime")
