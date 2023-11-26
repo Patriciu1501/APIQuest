@@ -4,6 +4,7 @@ import bogatu.api.apiquest.entities.User;
 import bogatu.api.apiquest.exceptions.UserNotFoundException;
 import bogatu.api.apiquest.repositories.User.UserDAO;
 import bogatu.api.apiquest.repositories.User.UserDataJPA;
+import bogatu.api.apiquest.security.details.SecurityUser;
 import bogatu.api.apiquest.tools.InstanceProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,8 +42,10 @@ class UserDetailsServiceTest {
     void beforeEach(){
         userDAO = Mockito.mock(UserDataJPA.class);
         underTest = u ->
-                userDAO.findUserByEmail(u).orElseThrow(
-                        () -> new UserNotFoundException("Not found")
+                new SecurityUser(
+                        userDAO.findUserByEmail(u).orElseThrow(
+                                () -> new UserNotFoundException("Not found")
+                        )
                 );
     }
 

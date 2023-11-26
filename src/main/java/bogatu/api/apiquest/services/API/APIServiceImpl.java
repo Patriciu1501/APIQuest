@@ -53,7 +53,16 @@ public class APIServiceImpl implements APIService{
 
     public List<APIDto> getMyAPIs(Authentication authentication){
         User user = userDAO.findUserByEmail(authentication.getName()).orElseThrow();
-        return DefaultAPIs.appendDefaultApis(user, apiMapper);
+        user.getApiSet().forEach(a -> System.out.print(a.isDefault() + " "));
+        System.out.println("-".repeat(20));
+        var userAPIs = user.getApiSet()
+                .stream()
+                .map(apiMapper::entityToDto)
+                .collect(Collectors.toSet());
+        System.out.println(userAPIs);
+        DefaultAPIs.appendDefaultApis(userAPIs);
+
+        return List.copyOf(userAPIs);
     }
 
     public List<APIDto> getAllAPIs(){

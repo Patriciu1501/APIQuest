@@ -4,6 +4,7 @@ import bogatu.api.apiquest.documents.RefreshToken;
 import bogatu.api.apiquest.entities.User;
 import bogatu.api.apiquest.repositories.RefreshToken.RefreshTokenRepository;
 import bogatu.api.apiquest.repositories.User.UserDAO;
+import bogatu.api.apiquest.security.details.SecurityUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -96,7 +97,8 @@ public class JwtService {
         String username = claims.get("username", String.class);
 
         userDAO.findUserByEmail(username).ifPresentOrElse(
-                u -> {
+                fu -> {
+                    var u = new SecurityUser(fu);
                     var auth = new UsernamePasswordAuthenticationToken(username, null, u.getAuthorities());
                     refreshTokenRepository.findById(tokenValue.substring(BEARER_PREFIX.length()))
                                     .ifPresentOrElse(

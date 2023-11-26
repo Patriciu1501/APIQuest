@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService{
     public UserUpdateDTO updateUser(UserUpdateDTO userUpdateDTO, int id){
         User foundUser = userDAO.findUserById(id).orElseThrow(() -> new UserNotFoundException(id + " not found"));
 
-        Stream.of(userUpdateDTO.apiQuestUsername(), userUpdateDTO.email(), userUpdateDTO.password())
+        Stream.of(userUpdateDTO.username(), userUpdateDTO.email(), userUpdateDTO.password())
                 .filter(Objects::nonNull)
                 .findAny()
                 .orElseThrow(() -> new RequestValidationException("Empty body provided"));
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService{
             throw new DuplicateException(userUpdateDTO.email() + "already taken");
 
         if(userUpdateDTO.email() != null) foundUser.setEmail(userUpdateDTO.email());
-        if(userUpdateDTO.apiQuestUsername() != null) foundUser.setApiQuestUsername(userUpdateDTO.apiQuestUsername());
+        if(userUpdateDTO.username() != null) foundUser.setUsername(userUpdateDTO.username());
         if(userUpdateDTO.password() != null) foundUser.setPassword(userUpdateDTO.password());
 
         foundUser.setUpdatedAt(LocalDateTime.now());
@@ -114,10 +114,8 @@ public class UserServiceImpl implements UserService{
                 userDAO.findUserByEmail(authentication.getName()).orElseThrow()
         );
 
-        user.getApiSet().addAll(
-                Set.copyOf(DefaultAPIs.appendDefaultApis(userMapper.userInfoToEntity(user), apiMapper))
-        );
 
+        DefaultAPIs.appendDefaultApis(user.getApiSet());
         return user;
     }
 

@@ -8,8 +8,7 @@ import java.time.LocalDateTime;
 
 public record UserUpdateDTO(@JsonProperty(access = JsonProperty.Access.READ_ONLY) Integer id,
                             @Size(min = 5)
-                            @JsonProperty("username")
-                            String apiQuestUsername,
+                            String username,
                             @Pattern(
                                     regexp = "^(?=.*[A-Za-z])(?=.*\\d).{10,}$",
                                     message = "The password must have min length 10 " +

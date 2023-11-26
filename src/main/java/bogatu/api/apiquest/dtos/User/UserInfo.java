@@ -25,8 +25,7 @@ import java.util.Set;
 public class UserInfo {
 
     private int id;
-    @JsonProperty("username")
-    private String apiQuestUsername;
+    private String username;
     private String email;
     private int score;
     @JsonProperty("type")

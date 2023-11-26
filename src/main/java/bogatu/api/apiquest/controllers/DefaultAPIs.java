@@ -1,6 +1,7 @@
 package bogatu.api.apiquest.controllers;
 
 import bogatu.api.apiquest.dtos.API.APIDto;
+import bogatu.api.apiquest.dtos.User.UserInfo;
 import bogatu.api.apiquest.entities.User;
 import bogatu.api.apiquest.mappers.APIMapper;
 import bogatu.api.apiquest.services.User.UserService;
@@ -57,12 +58,12 @@ public class DefaultAPIs {
     }
 
 
-    public static List<APIDto> appendDefaultApis(User user, APIMapper apiMapper){
-       return Stream.concat(user.getApiSet().stream().map(apiMapper::entityToDto),
-                        Arrays.stream(DefaultAPIs.apis).map(
-                                s -> new APIDto(s, "/api/defaultApis/" + s.substring(0, 1).toLowerCase() + s.substring(1), 1, true, null, null)
-                        ))
-                .toList();
+    public static void appendDefaultApis(Set<? super APIDto> apis){
+       apis.addAll(
+               Arrays.stream(DefaultAPIs.apis).map(
+                       s -> new APIDto(s, "/api/defaultApis/" + s.substring(0, 1).toLowerCase() + s.substring(1), 1, true, null, null)
+               ).toList()
+       );
     }
 
 
