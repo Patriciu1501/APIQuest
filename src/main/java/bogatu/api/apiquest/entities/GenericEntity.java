@@ -8,14 +8,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @MappedSuperclass
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 public class GenericEntity {
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -26,14 +29,11 @@ public class GenericEntity {
     private LocalDateTime updatedAt;
 
 
-
     @Override
     public boolean equals(Object o){
         if(!(o instanceof GenericEntity g)) return false;
 
-        if(updatedAt == null && g.createdAt != null) return false;
-
-        return this.createdAt.equals(g.createdAt)
-                && this.updatedAt.equals(g.updatedAt);
+        return Objects.equals(this.createdAt, g.createdAt)
+                && Objects.equals(this.updatedAt, g.updatedAt);
     }
 }

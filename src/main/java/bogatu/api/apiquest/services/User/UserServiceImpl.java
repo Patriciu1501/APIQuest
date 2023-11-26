@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService{
 
         User entityToSave = userMapper.dtoRequestToEntity(userRegistrationRequest);
         entityToSave.setPassword(passwordEncoder.encode(entityToSave.getPassword()));
-        entityToSave.setRoleId(User.UserType.ROLE_USER.getId());
+//        entityToSave.setRoleId(User.UserType.ROLE_USER.getId());
         var defaultAPIs = apiDao.getAllDefaults();
 
         defaultAPIs.forEach(a -> a.getUsers().add(entityToSave));
@@ -72,11 +72,7 @@ public class UserServiceImpl implements UserService{
 
         return userDAO.getAllUsers(pageNumber, pageSize)
                 .stream()
-                .map(u -> {
-                    var userInfo = userMapper.entityToUserInfo(u);
-                    userInfo.setUserType(userInfo.getUserType().substring(5));
-                    return userInfo;
-                })
+                .map(userMapper::entityToUserInfo)
                 .toList();
     }
 
@@ -121,8 +117,6 @@ public class UserServiceImpl implements UserService{
         user.getApiSet().addAll(
                 Set.copyOf(DefaultAPIs.appendDefaultApis(userMapper.userInfoToEntity(user), apiMapper))
         );
-
-        user.setUserType(user.getUserType().substring(5));
 
         return user;
     }

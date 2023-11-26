@@ -2,6 +2,7 @@ package bogatu.api.apiquest.dtos.User;
 
 import bogatu.api.apiquest.dtos.API.APIDto;
 import bogatu.api.apiquest.entities.API;
+import bogatu.api.apiquest.entities.Role;
 import bogatu.api.apiquest.entities.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,7 +21,7 @@ import java.util.Set;
 @Getter
 @Setter
 @AllArgsConstructor
-@JsonPropertyOrder(value = {"id", "username", "email", "createdAt", "updatedAt", "userType"})
+@JsonPropertyOrder(value = {"id", "username", "email", "createdAt", "updatedAt"})
 public class UserInfo {
 
     private int id;
@@ -29,7 +30,7 @@ public class UserInfo {
     private String email;
     private int score;
     @JsonProperty("type")
-    private String userType;
+    private String role;
     @JsonFormat(pattern = "dd MMM, YYYY 'at' HH:mm")
     @JsonProperty("registrationTime")
     private LocalDateTime createdAt;

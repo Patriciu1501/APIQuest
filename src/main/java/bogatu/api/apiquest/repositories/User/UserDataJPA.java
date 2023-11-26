@@ -20,7 +20,7 @@ public non-sealed class UserDataJPA implements UserDAO{
 
     @Override
     public List<User> getAllUsers(int pageNumber, int pageSize) {
-        return repo.findAllUsers(Pageable.ofSize(pageSize).withPage(pageNumber)).toList();
+        return repo.findAll(Pageable.ofSize(pageSize).withPage(pageNumber)).toList();
     }
 
     @Override
@@ -30,7 +30,7 @@ public non-sealed class UserDataJPA implements UserDAO{
 
     @Override
     public Optional<User> findUserByEmail(String email) {
-        return repo.findUserByEmail(email);
+        return repo.findByEmail(email);
     }
 
     @Override
